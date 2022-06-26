@@ -62,8 +62,8 @@ ServiceConfiguration.configurations.upsert(
   {
     $set: {
       loginStyle: 'popup',
-      clientId: '4615d926eaacf97d75df', // insert your clientId here
-      secret: '601a6a962f353587033abecbccec5e81a54fa8ca', // insert your secret here
+      clientId: 'ba0d7ce6ef32c50663e2', // insert your clientId here
+      secret: 'd8f4422f6643691262250e574be98ac38d34be28', // insert your secret here
     },
   }
 );
