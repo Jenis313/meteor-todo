@@ -1,6 +1,10 @@
 import { Meteor } from "meteor/meteor";
 import { Accounts } from "meteor/accounts-base";
-import { TasksCollection } from "../imports/api/TasksCollection";
+import { TasksCollection } from "../imports/db/TasksCollection";
+import { ServiceConfiguration } from 'meteor/service-configuration';
+import '/imports/api/tasksMethods';
+import '/imports/api/tasksPublications';
+
 
 // function insertLink({ title, url }) {
 //   LinksCollection.insert({title, url, createdAt: new Date()});
@@ -52,3 +56,14 @@ Meteor.startup(() => {
     ].forEach((taskText) => insertTask(taskText, user));
   }
 });
+
+ServiceConfiguration.configurations.upsert(
+  { service: 'github' },
+  {
+    $set: {
+      loginStyle: 'popup',
+      clientId: '4615d926eaacf97d75df', // insert your clientId here
+      secret: '601a6a962f353587033abecbccec5e81a54fa8ca', // insert your secret here
+    },
+  }
+);

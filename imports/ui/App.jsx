@@ -1,8 +1,11 @@
+// meteor.call - only authenticated user should be able able to add, update and delete the data(their own data only)
+// publications and subscribe is about getting data(only if client is authenticated)
+
 import { Meteor } from "meteor/meteor";
 import React, { useState, Fragment } from "react";
 import { useTracker } from "meteor/react-meteor-data";
 import { Task } from "./Task.jsx";
-import { TasksCollection } from "../api/TasksCollection.js";
+import { TasksCollection } from "../db/TasksCollection.js";
 import { TaskForm } from "./TaskForm.jsx";
 import { LoginForm } from "./LoginForm";
 // const tasks = [
@@ -10,18 +13,21 @@ import { LoginForm } from "./LoginForm";
 //   {_id: 2, text: 'Second Task'},
 //   {_id: 3, text: 'Third Task'},
 // ];
-const deleteTask = ({ _id }) => TasksCollection.remove(_id);
+const deleteTask = ({ _id }) => Meteor.call('tasks.remove', _id);
 
 const logout = () => Meteor.logout();
 
 const toogleChecked = (arg) => {
   const { _id, isChecked } = arg;
   // Update task in database
-  TasksCollection.update(_id, {
-    $set: {
-      isChecked: !isChecked,
-    },
-  });
+
+  return Meteor.call('tasks.setIsChecked', _id, !isChecked);
+
+  // TasksCollection.update(_id, {
+  //   $set: {
+  //     isChecked: !isChecked,
+  //   },
+  // });
 };
 export const App = () => {
   const [hideCompleted, setHideCompleted] = useState(false);
@@ -32,25 +38,34 @@ export const App = () => {
   const userFilter = user ? { userId: user._id } : {};
   const pendingOnlyFilter = { ...hideCompletedFilter, ...userFilter };
 
-  const tasks = useTracker(() => {
-    if (!user) {
-      return [];
+  // using useTracer whenever we are finding(in my assumption)
+  const {tasks, pendingTasksCount, isLoading} = useTracker(() => {
+    const noDataAvailable = { tasks: [], pendingTasksCount: 0 };
+    if (!Meteor.user(/*it gives user from db if user is authenticated*/)) {
+      return noDataAvailable;
     }
-    return TasksCollection.find(
+    // return TasksCollection.find(
+    //   hideCompleted ? pendingOnlyFilter : userFilter,
+    //   {
+    //     sort: { createdAt: -1 },
+    //   }
+    // ).fetch();
+    const handler = Meteor.subscribe('tasks');
+    if(!handler.ready()){
+      return {...noDataAvailable, isLoading: true}
+    }
+
+    const tasks = TasksCollection.find(
       hideCompleted ? pendingOnlyFilter : userFilter,
       {
         sort: { createdAt: -1 },
       }
     ).fetch();
+    const pendingTasksCount = TasksCollection.find(pendingOnlyFilter).count();
+    return { tasks, pendingTasksCount };
+
   });
 
-  const pendingTasksCount = useTracker(() => {
-    if (!user) {
-      return 0;
-    }
-
-    return TasksCollection.find(pendingOnlyFilter).count();
-  });
 
   const pendingTasksTitle = `${
     pendingTasksCount ? ` (${pendingTasksCount})` : ""
@@ -69,7 +84,7 @@ export const App = () => {
         {user ? (
           <Fragment>
             <div className="user" onClick={logout}>
-              {user.username} 🚪
+              {user.username || user.profile.name} 🚪
             </div>
             <TaskForm user={user}></TaskForm>
             <div className="filter">
@@ -77,6 +92,7 @@ export const App = () => {
                 {hideCompleted ? "Show All" : "Hide Completed"}
               </button>
             </div>
+            {isLoading && <div className="loading">loading...</div>}
             <ul className="tasks">
               {tasks.map((task) => (
                 <Task
