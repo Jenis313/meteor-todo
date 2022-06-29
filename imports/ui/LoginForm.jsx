@@ -13,32 +13,36 @@ export const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={submit} className="login-form">
-      <LoginWithGithub></LoginWithGithub>
-      <div>
-        <label htmlFor="username">Username</label>
+    <div>
+      <form onSubmit={submit} className="login-form">
+        <LoginWithGithub></LoginWithGithub>
+        <div>
+          <label htmlFor="username">Username</label>
 
-        <input
-          type="text"
-          placeholder="Username"
-          name="username"
-          required
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </div>
-      <div>
-        <label htmlFor="password">Password</label>
+          <input
+            type="text"
+            placeholder="Username"
+            name="username"
+            required
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="password">Password</label>
 
-        <input
-          type="password"
-          placeholder="Password"
-          name="password"
-          required
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
+          <input
+            type="password"
+            placeholder="Password"
+            name="password"
+            required
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
 
-      <button type="submit">Log In</button>
-    </form>
+        <button type="submit">Log In</button>
+      </form>
+      <span className="or">OR</span>
+      
+    </div>
   );
 };

@@ -26,6 +26,10 @@ button {
   cursor: pointer;
 }
 
+input:checked + span{
+  text-decoration: line-through;
+}
+
 button:focus {
   outline: 0;
 }
@@ -143,6 +147,7 @@ header {
 
 /* Login form */
 .login-form {
+  margin-top: 1em;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -177,8 +182,14 @@ header {
 
 .login-form > div > button {
   background-color: #62807e;
+  color: red;
 }
 
+/* OR */
+.or{
+  text-align: center;
+  display: block;
+}
 /* user profile */
 .user {
   display: flex;
