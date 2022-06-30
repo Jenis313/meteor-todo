@@ -146,25 +146,25 @@ header {
 }
 
 /* Login form */
-.login-form {
-  margin-top: 1em;
+.form {
+  margin: 1em 0;
   display: flex;
   flex-direction: column;
-  height: 100%;
-
   justify-content: center;
   align-items: center;
 }
 
-.login-form > div {
-  margin: 8px;
+.form > div {
+  width: 80%;
+  margin: 8px auto;
+
 }
 
-.login-form > div > label {
+.form > div > label {
   font-weight: bold;
 }
 
-.login-form > div > input {
+.form > div > input {
   flex-grow: 1;
   box-sizing: border-box;
   padding: 10px 6px;
@@ -176,13 +176,13 @@ header {
   margin-top: 4px;
 }
 
-.login-form > div > input:focus {
+.form > div > input:focus {
   outline: 0;
 }
 
-.login-form > div > button {
+.form button {
   background-color: #62807e;
-  color: red;
+  color: white;
 }
 
 /* OR */
@@ -201,7 +201,7 @@ header {
 }
 
 /* github login */
-.github-btn {
+.form .github-btn {
   border: 1px solid #e1e5f0;
   background-color: #fff;
   width: 245px;

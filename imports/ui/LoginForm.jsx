@@ -1,10 +1,12 @@
 import { Meteor } from "meteor/meteor";
+
 import React, { useState } from "react";
 import { LoginWithGithub } from "./LoginWithGithub";
 
 export const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
 
   const submit = (e) => {
     e.preventDefault();
@@ -12,9 +14,19 @@ export const LoginForm = () => {
     Meteor.loginWithPassword(username, password);
   };
 
+  const handleRegisterSubmit = (e) => {
+    e.preventDefault();
+  
+    Meteor.call('user.insert', {username,email,password});
+    Meteor.loginWithPassword(username, password);
+    setUsername('')
+    setEmail('')
+    setPassword('')
+  }
+
   return (
     <div>
-      <form onSubmit={submit} className="login-form">
+      <form onSubmit={submit} className="form">
         <LoginWithGithub></LoginWithGithub>
         <div>
           <label htmlFor="username">Username</label>
@@ -41,8 +53,44 @@ export const LoginForm = () => {
 
         <button type="submit">Log In</button>
       </form>
+
       <span className="or">OR</span>
-      
+
+      <form onSubmit={handleRegisterSubmit} className="form">
+        <div>
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            placeholder="email"
+            name="email"
+            required
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="username">Username</label>
+          <input
+            type="text"
+            placeholder="Username"
+            name="username"
+            required
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="password">Password</label>
+
+          <input
+            type="password"
+            placeholder="Password"
+            name="password"
+            required
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+
+        <button type="submit">Register</button>
+      </form>
     </div>
   );
 };
